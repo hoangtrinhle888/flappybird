@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plants vs. Zombies</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="startScreen" class="screen active">
+        <div class="start-content">
+            <div class="game-logo">
+                <h1 class="logo-text">PLANTS<br><span>vs.</span><br>ZOMBIES</h1>
+            </div>
+            <button id="startBtn" class="btn-start">CHƠI NGAY</button>
+            <button id="instructBtn" class="btn-secondary">HƯỚNG DẪN</button>
+        </div>
+        <div class="start-zombies">
+            <div class="zombie-parade">
+                <div class="zombie-icon z1"></div>
+                <div class="zombie-icon z2"></div>
+                <div class="zombie-icon z3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions Screen -->
+    <div id="instructScreen" class="screen">
+        <div class="instruct-box">
+            <h2>Cách chơi</h2>
+            <ul>
+                <li>🌻 Trồng <b>Hoa Hướng Dương</b> để tạo ra mặt trời</li>
+                <li>🌱 Thu thập <b>Mặt trời</b> để mua cây</li>
+                <li>🌿 Chọn cây từ thẻ bên trên, sau đó click vào ô đất để trồng</li>
+                <li>🧟 Ngăn <b>Zombie</b> không qua được vườn nhà bạn</li>
+                <li>💥 Mỗi làn đường độc lập nhau</li>
+            </ul>
+            <div class="plant-guide">
+                <div class="guide-item"><div class="plant-icon sunflower-icon"></div><span>Hoa Hướng Dương: 50☀ - Tạo mặt trời</span></div>
+                <div class="guide-item"><div class="plant-icon peashooter-icon"></div><span>Đậu Bắn: 100☀ - Bắn đạn thường</span></div>
+                <div class="guide-item"><div class="plant-icon wallnut-icon"></div><span>Quả Hồ Đào: 50☀ - Hấp thụ sát thương</span></div>
+                <div class="guide-item"><div class="plant-icon snowpea-icon"></div><span>Đậu Tuyết: 175☀ - Bắn đạn đóng băng</span></div>
+                <div class="guide-item"><div class="plant-icon cherrybomb-icon"></div><span>Bom Anh Đào: 150☀ - Nổ toàn vùng</span></div>
+                <div class="guide-item"><div class="plant-icon repeater-icon"></div><span>Đậu Đôi: 200☀ - Bắn 2 đạn</span></div>
+            </div>
+            <button id="backBtn" class="btn-secondary">QUAY LẠI</button>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+        <div id="hud">
+            <div id="plantCards">
+                <div class="card" data-plant="sunflower" title="Hoa Hướng Dương - 50☀"><div class="card-plant sunflower-card"></div><div class="card-cost">50</div><div class="card-cooldown"></div></div>
+                <div class="card" data-plant="peashooter" title="Đậu Bắn - 100☀"><div class="card-plant peashooter-card"></div><div class="card-cost">100</div><div class="card-cooldown"></div></div>
+                <div class="card" data-plant="wallnut" title="Quả Hồ Đào - 50☀"><div class="card-plant wallnut-card"></div><div class="card-cost">50</div><div class="card-cooldown"></div></div>
+                <div class="card" data-plant="snowpea" title="Đậu Tuyết - 175☀"><div class="card-plant snowpea-card"></div><div class="card-cost">175</div><div class="card-cooldown"></div></div>
+                <div class="card" data-plant="cherrybomb" title="Bom Anh Đào - 150☀"><div class="card-plant cherrybomb-card"></div><div class="card-cost">150</div><div class="card-cooldown"></div></div>
+                <div class="card" data-plant="repeater" title="Đậu Đôi - 200☀"><div class="card-plant repeater-card"></div><div class="card-cost">200</div><div class="card-cooldown"></div></div>
+                <div class="card" data-plant="potatomine" title="Mìn Khoai Tây - 25☀"><div class="card-plant potatomine-card"></div><div class="card-cost">25</div><div class="card-cooldown"></div></div>
+                <div class="card shovel-card-btn" id="shovelBtn" title="Xẻng - Nhổ cây"><div class="shovel-icon">⛏️</div><div class="card-label">Xẻng</div></div>
+            </div>
+            <div id="sunCounter"><div class="sun-icon">☀️</div><span id="sunCount">150</span></div>
+            <div id="waveInfo"><span id="waveText">Làn 1</span><div id="progressBar"><div id="progressFill"></div></div></div>
+            <button id="pauseBtn">⏸</button>
+        </div>
+        <div id="gameWorld">
+            <div id="lawn"></div>
+            <div id="zombiesLayer"></div>
+            <div id="projectilesLayer"></div>
+            <div id="sunsLayer"></div>
+            <div id="effectsLayer"></div>
+        </div>
+        <div id="dangerZone"></div>
+        <div id="shovelCursor" class="hidden">⛏️</div>
+    </div>
+
+    <!-- Pause Screen -->
+    <div id="pauseScreen" class="screen overlay">
+        <div class="pause-box">
+            <h2>TẠM DỪNG</h2>
+            <button id="resumeBtn" class="btn-start">TIẾP TỤC</button>
+            <button id="menuBtn" class="btn-secondary">MENU CHÍNH</button>
+        </div>
+    </div>
+
+    <!-- Win Screen -->
+    <div id="winScreen" class="screen overlay">
+        <div class="result-box win">
+            <h2>🎉 CHIẾN THẮNG! 🎉</h2>
+            <p>Bạn đã bảo vệ vườn nhà thành công!</p>
+            <button id="nextLevelBtn" class="btn-start">TIẾP TỤC</button>
+            <button id="winMenuBtn" class="btn-secondary">MENU CHÍNH</button>
+        </div>
+    </div>
+
+    <!-- Lose Screen -->
+    <div id="loseScreen" class="screen overlay">
+        <div class="result-box lose">
+            <div class="brainz">🧟</div>
+            <h2>THẤT BẠI!</h2>
+            <p>Zombie đã xâm chiếm vườn nhà bạn!</p>
+            <button id="retryBtn" class="btn-start">THỬ LẠI</button>
+            <button id="loseMenuBtn" class="btn-secondary">MENU CHÍNH</button>
+        </div>
+    </div>
+
+    <div id="plantCursor" class="hidden"></div>
+    <script src="game.js"></script>
+</body>
+</html>
