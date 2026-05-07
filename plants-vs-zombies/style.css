@@ -1,0 +1,721 @@
+/* ===== RESET & BASE ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: 'Arial Black', Arial, sans-serif;
+    background: #1a1a2e;
+    user-select: none;
+}
+
+/* ===== SCREENS ===== */
+.screen { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+.screen.active { display: flex; }
+.screen.overlay { display: none; position: fixed; z-index: 1000; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
+.screen.overlay.active { display: flex; }
+
+/* ===== START SCREEN ===== */
+#startScreen {
+    background:
+        radial-gradient(ellipse at bottom, #2d5a27 0%, #1a3a15 40%, #0d1f0a 100%);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+#startScreen::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="80" r="15" fill="%23228B22" opacity="0.3"/><circle cx="50" cy="75" r="20" fill="%2332CD32" opacity="0.2"/><circle cx="80" cy="82" r="12" fill="%23228B22" opacity="0.3"/></svg>') repeat-x bottom;
+    background-size: 100% 30%;
+}
+.start-content {
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.game-logo { text-align: center; }
+.logo-text {
+    font-size: 60px;
+    font-weight: 900;
+    color: #7fff00;
+    text-shadow:
+        4px 4px 0 #1a5c00,
+        -2px -2px 0 #1a5c00,
+        0 0 30px #00ff00,
+        0 0 60px #00aa00;
+    line-height: 1;
+    letter-spacing: 2px;
+}
+.logo-text span { color: #ff4500; text-shadow: 4px 4px 0 #8b0000, 0 0 30px #ff0000; }
+
+.start-zombies {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 100px;
+    overflow: hidden;
+}
+.zombie-parade {
+    display: flex;
+    animation: parade 8s linear infinite;
+    position: absolute;
+    bottom: 20px;
+}
+@keyframes parade {
+    0% { transform: translateX(100vw); }
+    100% { transform: translateX(-300px); }
+}
+.zombie-icon {
+    width: 60px; height: 80px;
+    background: url('assets/zombie_basic.png') center/contain no-repeat,
+                linear-gradient(to bottom, #6b8e23, #4a6b1a);
+    margin: 0 20px;
+    border-radius: 4px;
+    animation: zombieWalk 0.6s steps(2) infinite;
+}
+@keyframes zombieWalk {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+.btn-start {
+    padding: 15px 50px;
+    font-size: 24px;
+    font-weight: 900;
+    background: linear-gradient(to bottom, #ff8c00, #ff4500);
+    color: white;
+    border: 4px solid #8b2500;
+    border-radius: 12px;
+    cursor: pointer;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    box-shadow: 0 6px 0 #8b2500, 0 0 20px rgba(255,100,0,0.5);
+    transition: all 0.1s;
+    letter-spacing: 2px;
+}
+.btn-start:hover { background: linear-gradient(to bottom, #ffa500, #ff6600); transform: translateY(-2px); box-shadow: 0 8px 0 #8b2500, 0 0 30px rgba(255,100,0,0.7); }
+.btn-start:active { transform: translateY(4px); box-shadow: 0 2px 0 #8b2500; }
+
+.btn-secondary {
+    padding: 10px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(to bottom, #4a8c1c, #2d5a10);
+    color: #c8ff80;
+    border: 3px solid #1a3a08;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #1a3a08;
+    transition: all 0.1s;
+}
+.btn-secondary:hover { background: linear-gradient(to bottom, #5ca022, #3a7015); transform: translateY(-1px); }
+.btn-secondary:active { transform: translateY(3px); box-shadow: 0 1px 0 #1a3a08; }
+
+/* ===== INSTRUCTION SCREEN ===== */
+#instructScreen {
+    background: rgba(0,0,0,0.85);
+    justify-content: center; align-items: center;
+    display: none;
+}
+#instructScreen.active { display: flex; }
+.instruct-box {
+    background: linear-gradient(135deg, #1a3a0a, #0d2005);
+    border: 3px solid #4a8c1c;
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    color: #c8ff80;
+}
+.instruct-box h2 { font-size: 28px; color: #7fff00; text-align: center; margin-bottom: 20px; }
+.instruct-box ul { list-style: none; margin-bottom: 20px; }
+.instruct-box ul li { padding: 8px 0; font-size: 16px; border-bottom: 1px solid rgba(74,140,28,0.3); }
+.plant-guide { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.guide-item { display: flex; align-items: center; gap: 10px; font-size: 13px; background: rgba(74,140,28,0.1); padding: 8px; border-radius: 6px; }
+.plant-icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 4px; }
+
+/* ===== HUD ===== */
+#gameScreen { display: none; flex-direction: column; }
+#gameScreen.active { display: flex; }
+
+#hud {
+    height: 110px;
+    background: url('assets/almanac_bg.png'), linear-gradient(to bottom, #5c3a00, #3a2200);
+    background-size: cover;
+    border-bottom: 4px solid #8b5a00;
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    gap: 10px;
+    position: relative;
+    z-index: 100;
+    flex-shrink: 0;
+}
+
+#plantCards {
+    display: flex;
+    gap: 5px;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+#plantCards::-webkit-scrollbar { display: none; }
+
+.card {
+    width: 68px;
+    min-width: 68px;
+    height: 96px;
+    background: linear-gradient(to bottom, #2a4a0a, #1a2f05);
+    border: 2px solid #4a7a1c;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.card:hover:not(.disabled) { border-color: #8aff20; box-shadow: 0 0 10px rgba(138,255,32,0.5); transform: translateY(-2px); }
+.card.selected { border-color: #ffff00; box-shadow: 0 0 15px rgba(255,255,0,0.7); background: linear-gradient(to bottom, #3a6a0a, #2a4a05); }
+.card.disabled { opacity: 0.5; cursor: not-allowed; }
+.card.on-cooldown { cursor: not-allowed; }
+
+.card-plant {
+    width: 60px; height: 60px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-top: 4px;
+}
+.card-cost {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #ffff00;
+    text-shadow: 1px 1px 2px black;
+}
+.card-cost::before {
+    content: '☀';
+    margin-right: 1px;
+}
+.card-cooldown {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 0;
+    background: rgba(0,0,100,0.6);
+    transition: height 0.1s;
+}
+
+/* Shovel card */
+.shovel-card-btn {
+    background: linear-gradient(to bottom, #4a2a00, #2d1a00);
+    border-color: #8b5a00;
+    justify-content: center;
+    padding-top: 10px;
+}
+.shovel-card-btn:hover { border-color: #ffaa00; box-shadow: 0 0 10px rgba(255,170,0,0.5); }
+.shovel-card-btn.selected { border-color: #ffff00; }
+.shovel-icon { font-size: 30px; }
+.card-label { font-size: 11px; color: #ffcc80; margin-top: 4px; }
+
+#sunCounter {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid #ffaa00;
+    border-radius: 8px;
+    padding: 8px 12px;
+    min-width: 90px;
+}
+.sun-icon { font-size: 28px; animation: sunSpin 3s linear infinite; }
+@keyframes sunSpin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+#sunCount { font-size: 22px; font-weight: 900; color: #ffff00; text-shadow: 2px 2px 4px black; }
+
+#waveInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 100px;
+}
+#waveText { font-size: 14px; color: #ffcc80; font-weight: bold; }
+#progressBar { width: 90px; height: 10px; background: #1a1a1a; border: 2px solid #555; border-radius: 5px; overflow: hidden; }
+#progressFill { height: 100%; background: linear-gradient(to right, #ff4500, #ff0000); width: 0%; transition: width 0.5s; }
+
+#pauseBtn {
+    background: rgba(0,0,0,0.5);
+    border: 2px solid #666;
+    border-radius: 6px;
+    color: white;
+    font-size: 20px;
+    width: 36px; height: 36px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+#pauseBtn:hover { background: rgba(255,255,255,0.2); }
+
+/* ===== GAME WORLD ===== */
+#gameWorld {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(to bottom, #87ceeb 0%, #c8e6c9 30%, #4a7c3f 30%, #3d6b35 60%, #2d5028 100%);
+}
+
+/* Sky */
+#gameWorld::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 30%;
+    background: linear-gradient(to bottom, #87ceeb, #c8e6c9);
+    z-index: 0;
+}
+
+/* ===== LAWN GRID ===== */
+#lawn {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+}
+
+.lane {
+    position: absolute;
+    left: 0; right: 0;
+    display: flex;
+}
+
+.cell {
+    position: relative;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.15s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cell:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
+.cell.selected-target { background: rgba(255,255,0,0.2); border-color: rgba(255,255,0,0.5); }
+
+/* Even/odd lane shading */
+.lane:nth-child(odd) .cell { background-color: rgba(0,80,0,0.1); }
+.lane:nth-child(even) .cell { background-color: rgba(0,100,0,0.05); }
+
+/* Plant in cell */
+.plant-container {
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+}
+.plant-sprite {
+    image-rendering: pixelated;
+    animation: plantIdle 0.8s steps(2) infinite;
+}
+@keyframes plantIdle {
+    0% { transform: scaleX(1); }
+    50% { transform: scaleX(0.97); }
+    100% { transform: scaleX(1); }
+}
+.plant-health-bar {
+    width: 44px; height: 5px;
+    background: #333;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 2px;
+}
+.plant-health-fill {
+    height: 100%;
+    background: #00ff00;
+    transition: width 0.2s, background 0.2s;
+}
+
+/* ===== ZOMBIES ===== */
+#zombiesLayer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.zombie {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+.zombie-sprite {
+    image-rendering: pixelated;
+    animation: zombieWalkAnim 0.5s steps(2) infinite;
+}
+@keyframes zombieWalkAnim {
+    0% { transform: rotate(-3deg) translateY(0); }
+    50% { transform: rotate(3deg) translateY(-3px); }
+    100% { transform: rotate(-3deg) translateY(0); }
+}
+.zombie.frozen .zombie-sprite { filter: hue-rotate(180deg) saturate(2); animation-duration: 1s; }
+.zombie.eating .zombie-sprite { animation: eating 0.3s steps(2) infinite; }
+@keyframes eating {
+    0% { transform: translateX(-2px); }
+    50% { transform: translateX(2px); }
+    100% { transform: translateX(-2px); }
+}
+.zombie-health-bar {
+    width: 50px; height: 6px;
+    background: #333;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 2px;
+}
+.zombie-health-fill {
+    height: 100%;
+    background: #ff0000;
+    transition: width 0.1s;
+}
+
+/* ===== PROJECTILES ===== */
+#projectilesLayer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 15;
+    pointer-events: none;
+}
+.projectile {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+.pea {
+    width: 20px; height: 20px;
+    background: radial-gradient(circle at 35% 35%, #90ee90, #228b22);
+    box-shadow: 0 0 6px rgba(0,255,0,0.5);
+    border-radius: 50%;
+}
+.pea.frozen {
+    background: radial-gradient(circle at 35% 35%, #87ceeb, #4169e1);
+    box-shadow: 0 0 8px rgba(100,150,255,0.8);
+}
+.pea2 {
+    width: 20px; height: 20px;
+    background: radial-gradient(circle at 35% 35%, #90ee90, #228b22);
+    box-shadow: 0 0 6px rgba(0,255,0,0.5);
+    border-radius: 50%;
+}
+
+/* ===== SUNS ===== */
+#sunsLayer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 30;
+    pointer-events: none;
+}
+.sun {
+    position: absolute;
+    width: 44px; height: 44px;
+    background: radial-gradient(circle at 40% 35%, #fff176, #ffd700, #ff8c00);
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: all;
+    box-shadow: 0 0 15px rgba(255,220,0,0.8), 0 0 30px rgba(255,180,0,0.4);
+    display: flex; justify-content: center; align-items: center;
+    font-size: 10px; font-weight: bold; color: #8b4500;
+    animation: sunFloat 0.3s ease-out;
+    transition: transform 0.1s;
+    z-index: 30;
+}
+.sun:hover { transform: scale(1.2); }
+.sun::before {
+    content: '☀';
+    font-size: 32px;
+    position: absolute;
+}
+@keyframes sunFloat {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.sun.falling { animation: sunFall 1.5s ease-out forwards; }
+@keyframes sunFall {
+    0% { top: 0; opacity: 1; }
+    100% { top: var(--target-y); opacity: 1; }
+}
+
+/* Sun collect animation */
+.sun-collect {
+    animation: sunCollect 0.3s ease-in forwards !important;
+}
+@keyframes sunCollect {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+}
+
+/* ===== EFFECTS ===== */
+#effectsLayer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 40;
+    pointer-events: none;
+}
+.explosion {
+    position: absolute;
+    border-radius: 50%;
+    animation: explode 0.5s ease-out forwards;
+    pointer-events: none;
+}
+@keyframes explode {
+    0% { transform: scale(0); opacity: 1; background: radial-gradient(circle, #fff, #ffdd00, #ff4500); }
+    50% { transform: scale(1); opacity: 0.9; background: radial-gradient(circle, #ffdd00, #ff4500, #ff0000); }
+    100% { transform: scale(2); opacity: 0; background: radial-gradient(circle, #ff4500, transparent); }
+}
+.zombie-death {
+    position: absolute;
+    font-size: 30px;
+    animation: deathFade 1s ease-out forwards;
+    pointer-events: none;
+}
+@keyframes deathFade {
+    0% { transform: translateY(0) rotate(0); opacity: 1; }
+    100% { transform: translateY(-60px) rotate(20deg); opacity: 0; }
+}
+.damage-text {
+    position: absolute;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ff4444;
+    text-shadow: 1px 1px 2px black;
+    animation: damageFloat 0.8s ease-out forwards;
+    pointer-events: none;
+    z-index: 50;
+}
+@keyframes damageFloat {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-30px); opacity: 0; }
+}
+.freeze-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(100,200,255,0.7), transparent);
+    animation: freeze 0.5s ease-out forwards;
+    pointer-events: none;
+}
+@keyframes freeze {
+    0% { transform: scale(0.5); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* ===== DANGER ZONE ===== */
+#dangerZone {
+    position: absolute;
+    left: 0;
+    top: 0; bottom: 0;
+    width: 60px;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255,0,0,0.1),
+        rgba(255,0,0,0.1) 10px,
+        rgba(0,0,0,0.1) 10px,
+        rgba(0,0,0,0.1) 20px
+    );
+    border-right: 2px solid rgba(255,0,0,0.4);
+    z-index: 5;
+}
+
+/* Shovel cursor */
+#shovelCursor {
+    position: fixed;
+    font-size: 28px;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-10px, -10px);
+}
+#shovelCursor.hidden { display: none; }
+
+/* ===== RESULT SCREENS ===== */
+.pause-box, .result-box {
+    background: linear-gradient(135deg, #1a3a0a, #0d2005);
+    border: 4px solid #4a8c1c;
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    color: #c8ff80;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.result-box.win { border-color: #ffd700; background: linear-gradient(135deg, #2a4a0a, #1a6005); }
+.result-box.lose { border-color: #ff4444; background: linear-gradient(135deg, #3a0a0a, #200505); color: #ff8888; }
+.result-box h2 { font-size: 36px; }
+.result-box p { font-size: 18px; }
+.brainz { font-size: 60px; animation: brainzFloat 1s ease-in-out infinite alternate; }
+@keyframes brainzFloat { 0%{transform:translateY(0)} 100%{transform:translateY(-10px)} }
+
+/* ===== PLANT SPRITES (CSS-drawn) ===== */
+/* Sunflower */
+.sunflower-icon, .sunflower-card {
+    background: radial-gradient(circle at 50% 60%, #8B4513 40%, #6B3410 100%),
+                radial-gradient(circle at 20% 20%, #FFD700, transparent 40%),
+                radial-gradient(circle at 80% 20%, #FFD700, transparent 40%),
+                radial-gradient(circle at 20% 80%, #FFD700, transparent 40%),
+                radial-gradient(circle at 80% 80%, #FFD700, transparent 40%),
+                radial-gradient(circle at 50% 10%, #FFD700, transparent 50%),
+                radial-gradient(circle at 10% 50%, #FFD700, transparent 50%),
+                radial-gradient(circle at 90% 50%, #FFD700, transparent 50%),
+                radial-gradient(circle at 50% 90%, #FFD700, transparent 50%);
+    background-color: #FFD700;
+}
+/* Peashooter */
+.peashooter-icon, .peashooter-card {
+    background: radial-gradient(ellipse at 50% 50%, #32CD32 40%, #228B22 100%);
+    background-color: #228B22;
+}
+/* Wallnut */
+.wallnut-icon, .wallnut-card {
+    background: radial-gradient(ellipse at 50% 40%, #DEB887 40%, #8B6914 100%);
+    background-color: #8B6914;
+}
+/* Snowpea */
+.snowpea-icon, .snowpea-card {
+    background: radial-gradient(ellipse at 50% 50%, #87CEEB 40%, #4169E1 100%);
+    background-color: #4169E1;
+}
+/* Cherrybomb */
+.cherrybomb-icon, .cherrybomb-card {
+    background: radial-gradient(circle at 40% 40%, #FF6666, #CC0000 70%),
+                radial-gradient(circle at 65% 45%, #FF6666, #CC0000 70%);
+    background-color: #CC0000;
+}
+/* Repeater */
+.repeater-icon, .repeater-card {
+    background: radial-gradient(ellipse at 50% 50%, #00AA00 40%, #006600 100%);
+    background-color: #006600;
+}
+/* Potato mine */
+.potatomine-icon, .potatomine-card {
+    background: radial-gradient(ellipse at 50% 50%, #CD853F 40%, #8B6914 100%);
+    background-color: #8B6914;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .logo-text { font-size: 40px; }
+    .card { width: 54px; min-width: 54px; height: 76px; }
+    .card-plant { width: 46px; height: 46px; }
+}
+
+/* ===== PLANT SPRITES IN GAME ===== */
+.plant-sprite.sunflower {
+    width: 70px; height: 80px;
+    background: url('assets/sunflower.png') center/contain no-repeat;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4));
+}
+.plant-sprite.peashooter {
+    width: 70px; height: 80px;
+    background: url('assets/peashooter.png') center/contain no-repeat;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4));
+}
+.plant-sprite.wallnut {
+    width: 65px; height: 75px;
+    background: url('assets/wallnut.png') center/contain no-repeat;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4));
+}
+.plant-sprite.snowpea {
+    width: 70px; height: 80px;
+    background: url('assets/snowpea.png') center/contain no-repeat;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4));
+}
+.plant-sprite.cherrybomb {
+    width: 65px; height: 70px;
+    background: url('assets/cherrybomb.png') center/contain no-repeat;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4));
+}
+.plant-sprite.repeater {
+    width: 70px; height: 80px;
+    background: url('assets/repeater.png') center/contain no-repeat;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4));
+}
+.plant-sprite.potatomine {
+    width: 55px; height: 60px;
+    background: url('assets/potatomine.png') center/contain no-repeat;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4));
+}
+
+/* Plant cursor preview */
+#plantCursor {
+    position: fixed;
+    width: 60px; height: 60px;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.8;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+}
+#plantCursor.hidden { display: none; }
+
+/* Zombie sprites */
+.zombie-sprite.basic {
+    width: 60px; height: 90px;
+    background: url('assets/zombie_basic.png') center/contain no-repeat;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+}
+.zombie-sprite.cone {
+    width: 60px; height: 100px;
+    background: url('assets/zombie_cone.png') center/contain no-repeat;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+}
+.zombie-sprite.bucket {
+    width: 65px; height: 105px;
+    background: url('assets/zombie_bucket.png') center/contain no-repeat;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+}
+.zombie-sprite.flag {
+    width: 65px; height: 95px;
+    background: url('assets/zombie_flag.png') center/contain no-repeat;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+}
+.zombie-sprite.football {
+    width: 75px; height: 100px;
+    background: url('assets/zombie_football.png') center/contain no-repeat;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+}
+
+/* Night/Day cycle effect */
+.lawn-day { filter: brightness(1); }
+.lawn-dusk { filter: brightness(0.7) sepia(0.3); }
+
+/* Combo text */
+.combo-text {
+    position: fixed;
+    top: 120px; right: 20px;
+    font-size: 20px; font-weight: 900;
+    color: #ffdd00;
+    text-shadow: 2px 2px black;
+    animation: comboAnim 1.5s ease-out forwards;
+    pointer-events: none;
+    z-index: 200;
+}
+@keyframes comboAnim {
+    0% { transform: scale(0.5); opacity: 1; }
+    20% { transform: scale(1.2); opacity: 1; }
+    80% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.8); opacity: 0; }
+}
